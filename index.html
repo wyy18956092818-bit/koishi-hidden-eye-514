@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#070508">
+  <title>♡</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --progress: 0;
+      --ink: #c9bccb;
+      --muted: #7e7181;
+      --pink: #b57d98;
+      --violet: #58415f;
+      --bg: #070508;
+      --glitch: 0;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg); }
+    body {
+      min-height: 100svh;
+      overflow: hidden;
+      color: var(--ink);
+      font-family: "Songti SC", "Noto Serif SC", "Microsoft YaHei", serif;
+      letter-spacing: .08em;
+      background:
+        radial-gradient(circle at 50% 46%, rgba(91, 55, 83, calc(.16 + var(--progress) * .11)), transparent 34%),
+        radial-gradient(circle at 48% 49%, #100b11 0, #070508 58%, #020203 100%);
+    }
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 20;
+    }
+    body::before {
+      opacity: calc(.12 + var(--progress) * .16);
+      background: repeating-linear-gradient(0deg, transparent 0 3px, rgba(255,255,255,.018) 4px, transparent 5px);
+      mix-blend-mode: screen;
+    }
+    body::after {
+      box-shadow: inset 0 0 14vw rgba(0,0,0,.94);
+      background: linear-gradient(90deg, rgba(113,28,69,calc(var(--progress) * .035)), transparent 35% 65%, rgba(54,77,105,calc(var(--progress) * .035)));
+    }
+    .counter {
+      position: fixed;
+      top: max(22px, env(safe-area-inset-top));
+      left: 50%;
+      translate: -50% 0;
+      z-index: 30;
+      min-width: 8.6rem;
+      padding: .55rem 1rem .48rem;
+      border: 1px solid rgba(196,161,186,.17);
+      background: rgba(7,5,8,.5);
+      text-align: center;
+      font: 400 .72rem/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+      letter-spacing: .34em;
+      color: #9f8d9f;
+      backdrop-filter: blur(8px);
+    }
+    #count { color: #e2d4e0; font-size: .86rem; }
+    main { min-height: 100svh; display: grid; place-items: center; position: relative; isolation: isolate; }
+    .stage {
+      position: relative;
+      width: 100vw;
+      height: 100svh;
+      display: grid;
+      place-items: center;
+      animation: stage-drift 10s ease-in-out infinite;
+    }
+    .stage::before {
+      content: "";
+      position: absolute;
+      width: 72%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(148,94,130,.12), transparent 66%);
+      filter: blur(24px);
+    }
+    @keyframes stage-drift { 50% { transform: translateY(5px); } }
+    .eye-button {
+      appearance: none;
+      position: relative;
+      width: clamp(290px, 58vw, 760px);
+      aspect-ratio: 2.45;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      cursor: pointer;
+      z-index: 4;
+      filter:
+        drop-shadow(calc((var(--progress) * -1px)) 0 rgba(164,45,90,.34))
+        drop-shadow(calc((var(--progress) * 1px)) 0 rgba(67,102,132,.28));
+      transition: filter .4s, transform .15s;
+      touch-action: manipulation;
+    }
+    .eye-button:hover { transform: scale(1.018); }
+    .eye-button:active { transform: scale(.985); }
+    .eye-button:focus-visible { outline: 1px solid #b98aa6; outline-offset: 10px; }
+    .closed-eye {
+      position: absolute;
+      inset: 0;
+      opacity: .94;
+      user-select: none;
+      transition: opacity 2.3s ease, filter 2s ease, transform 2.3s ease;
+    }
+    .closed-eye::before {
+      content: "";
+      position: absolute;
+      inset: 12% 7%;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at 50% 50%, rgba(136,88,126,.14), rgba(47,25,48,.06) 44%, transparent 72%);
+      filter: blur(17px);
+    }
+    .lid-line {
+      position: absolute;
+      left: 11%;
+      top: 42%;
+      width: 78%;
+      height: 31%;
+      border-bottom: clamp(4px, .58vw, 7px) solid #171019;
+      border-radius: 0 0 50% 50% / 0 0 100% 100%;
+      transform: rotate(-2deg);
+      filter: drop-shadow(0 3px 2px rgba(163,91,135,.18));
+    }
+    .lid-line::before,
+    .lid-line::after {
+      content: "";
+      position: absolute;
+      bottom: -3px;
+      width: 13%;
+      height: 12%;
+      border-bottom: clamp(3px, .4vw, 5px) solid #171019;
+      border-radius: 50%;
+    }
+    .lid-line::before { left: -7%; transform: rotate(16deg); }
+    .lid-line::after { right: -7%; transform: rotate(-16deg); }
+    .closed-eye .lash {
+      position: absolute;
+      top: 65%;
+      width: clamp(2px, .35vw, 4px);
+      height: 16%;
+      border: 0;
+      border-radius: 50%;
+      background: linear-gradient(#171019, transparent 88%);
+      transform-origin: top;
+    }
+    .closed-eye .l1 { left: 24%; transform: rotate(22deg); }
+    .closed-eye .l2 { left: 34%; transform: rotate(13deg); height: 19%; }
+    .closed-eye .l3 { left: 45%; transform: rotate(5deg); height: 20%; }
+    .closed-eye .l4 { right: 43%; transform: rotate(-5deg); height: 20%; }
+    .closed-eye .l5 { right: 32%; transform: rotate(-14deg); height: 18%; }
+    .closed-eye .l6 { right: 22%; transform: rotate(-23deg); }
+    .open-eye {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transform: scaleY(.06);
+      transition: opacity 1.8s ease, transform 3.1s cubic-bezier(.2,.7,.2,1);
+    }
+    .open-eye svg { width: 100%; height: 100%; overflow: visible; }
+    .eye-white { filter: drop-shadow(0 0 20px rgba(183,112,158,.18)); }
+    .iris-ring { transform-origin: 250px 156px; animation: iris-breathe 5s ease-in-out infinite; }
+    .upper-lid, .lower-lid, .open-lash { fill: none; stroke: #160d18; stroke-linecap: round; }
+    .upper-lid { stroke-width: 14; }
+    .lower-lid { stroke-width: 7; opacity: .92; }
+    .open-lash { stroke-width: 7; }
+    @keyframes iris-breathe { 50% { transform: scale(.975); filter: brightness(1.08); } }
+    .eye-shape {
+      position: absolute;
+      inset: 7% 1%;
+      overflow: hidden;
+      border-radius: 78% 18% 76% 20% / 72% 28% 72% 28%;
+      transform: rotate(-4deg);
+      background: radial-gradient(circle at 50% 50%, #09050b 0 10%, #56315a 11% 25%, #c39ab6 26% 31%, #d8c0d1 32% 45%, #efe6eb 46% 70%, #a9849a 72% 100%);
+      box-shadow: 0 0 0 3px #2b1727, 0 0 25px rgba(195,133,171,.28), inset 0 0 24px #553249;
+    }
+    .eye-shape::before {
+      content: "";
+      position: absolute;
+      inset: -17% -5% 57%;
+      background: #2c192c;
+      border-radius: 50%;
+      filter: blur(2px);
+    }
+    .eye-shape::after {
+      content: "";
+      position: absolute;
+      width: 13%; height: 13%;
+      left: 57%; top: 34%;
+      border-radius: 50%;
+      background: rgba(255,255,255,.72);
+      filter: blur(1px);
+    }
+    .open-eye > .lash { position: absolute; inset: 6% 0; border-top: 4px solid #160d18; border-radius: 50%; transform: rotate(-4deg); }
+    .open-eye > .lash::before, .open-eye > .lash::after { content: ""; position: absolute; width: 18px; height: 30px; border-left: 3px solid #160d18; border-radius: 50%; top: -11px; }
+    .open-eye > .lash::before { left: 14%; transform: rotate(30deg); }
+    .open-eye > .lash::after { right: 14%; transform: rotate(-25deg); }
+    .unlocked .closed-eye { opacity: .94; transform: none; filter: none; }
+    .unlocked .open-eye { opacity: 0; transform: scaleY(.06); }
+    .unlocked.eye-button { cursor: default; }
+    .figure-reveal {
+      position: absolute;
+      z-index: 3;
+      left: 50%;
+      bottom: 11%;
+      height: min(73svh, 560px);
+      width: auto;
+      max-width: 58vw;
+      opacity: 0;
+      transform: translate(-50%, 46%) scale(.72);
+      transform-origin: 50% 82%;
+      filter: brightness(0) invert(1) drop-shadow(0 0 15px rgba(255,255,255,.26)) drop-shadow(0 0 34px rgba(189,133,210,.34));
+      pointer-events: none;
+      user-select: none;
+      transition: opacity 4.2s ease, transform 6.2s cubic-bezier(.16,.74,.2,1), filter 4.5s ease;
+    }
+    .eye-button.unlocked ~ .figure-reveal {
+      opacity: .82;
+      transform: translate(-50%, 0) scale(1);
+      filter: brightness(0) invert(1) drop-shadow(0 0 18px rgba(255,255,255,.34)) drop-shadow(-7px 0 30px rgba(218,119,185,.38)) drop-shadow(7px 0 30px rgba(95,183,213,.3));
+    }
+    .whisper-layer { position: fixed; inset: 0; z-index: 12; pointer-events: none; overflow: hidden; }
+    .whisper {
+      position: absolute;
+      left: var(--x);
+      top: var(--y);
+      width: min(80vw, 34rem);
+      translate: -50% -50%;
+      color: rgba(218,204,217,.85);
+      font-size: clamp(.82rem, 2vw, 1rem);
+      text-align: center;
+      text-shadow: 0 0 12px rgba(217,164,197,.28);
+      opacity: 0;
+      animation: whisper 5.8s ease-out forwards;
+    }
+    @keyframes whisper {
+      0% { opacity: 0; transform: translateY(24px); filter: blur(3px); }
+      22% { opacity: .78; filter: blur(0); }
+      67% { opacity: .55; }
+      100% { opacity: 0; transform: translateY(-52px); filter: blur(2px); }
+    }
+    .glitch-band {
+      position: fixed;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      top: calc((var(--seed) * 1%) + 2%);
+      z-index: 18;
+      opacity: calc(var(--glitch) * .5);
+      background: linear-gradient(90deg, transparent 2%, #9c5277 24%, transparent 53%, #566b7e 77%, transparent 98%);
+      box-shadow: 0 0 4px rgba(179,99,139,.3);
+      transform: translateX(calc((var(--progress) * var(--shift)) * 1px));
+      pointer-events: none;
+      transition: transform .3s ease;
+    }
+    .glitch-shards { position: fixed; inset: 0; z-index: 19; overflow: hidden; pointer-events: none; opacity: calc(var(--glitch) * .9); }
+    .tear {
+      position: absolute;
+      left: -5%;
+      top: var(--top);
+      width: 110%;
+      height: var(--height);
+      background:
+        linear-gradient(90deg, transparent 0 8%, rgba(218,67,133,.28) 8% 19%, transparent 19% 55%, rgba(66,155,183,.22) 55% 76%, transparent 76%),
+        rgba(194,151,181,.025);
+      mix-blend-mode: screen;
+      transform: translateX(calc(var(--glitch) * var(--move)));
+      animation: tear-shift var(--speed) steps(1,end) infinite;
+    }
+    .tear:nth-child(2n) { filter: hue-rotate(115deg); }
+    @keyframes tear-shift {
+      0%, 72%, 100% { translate: 0; }
+      74% { translate: calc(var(--glitch) * -26px) 0; }
+      78% { translate: calc(var(--glitch) * 18px) 0; }
+      82% { translate: 0; }
+    }
+    .glitching .eye-button {
+      animation: glitch-jolt 4.6s steps(1,end) infinite;
+      filter:
+        drop-shadow(calc(var(--glitch) * -10px) 0 rgba(255,31,116,.48))
+        drop-shadow(calc(var(--glitch) * 10px) 0 rgba(44,183,218,.4))
+        contrast(calc(1 + var(--glitch) * .28));
+    }
+    @keyframes glitch-jolt {
+      0%, 67%, 100% { translate: 0 0; skew: 0deg; }
+      69% { translate: calc(var(--glitch) * -7px) calc(var(--glitch) * 2px); skew: calc(var(--glitch) * -.8deg); }
+      72% { translate: calc(var(--glitch) * 9px) calc(var(--glitch) * -2px); skew: calc(var(--glitch) * .6deg); }
+      75% { translate: 0 0; skew: 0deg; }
+    }
+    .glitching main::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(90deg, transparent 0 8vw, rgba(135,43,91,.035) 8vw 8.2vw, transparent 8.2vw 17vw);
+      opacity: var(--glitch);
+      animation: field-slide 7s steps(3,end) infinite;
+    }
+    @keyframes field-slide { 50% { transform: translateX(calc(var(--glitch) * 3vw)); } }
+    .unlock-panel {
+      position: fixed;
+      z-index: 40;
+      left: 50%;
+      bottom: max(5vh, 28px);
+      width: min(88vw, 390px);
+      transform: translate(-50%, 18px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1.8s 1.6s, transform 1.8s 1.6s;
+      text-align: center;
+    }
+    .unlock-panel.visible { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+    .riddle { border: 1px solid rgba(182,141,169,.2); padding: 17px 18px 14px; background: rgba(6,4,7,.75); backdrop-filter: blur(12px); }
+    .riddle-row { display: grid; grid-template-columns: 1.5rem 1fr; align-items: center; gap: .65rem; margin: .55rem 0; }
+    .riddle-row label { color: #806f80; font: .72rem/1 ui-monospace, monospace; }
+    input {
+      width: 100%;
+      height: 2.15rem;
+      border: 0;
+      border-bottom: 1px solid #5d485a;
+      background: rgba(255,255,255,.018);
+      color: #e7dbe4;
+      text-align: center;
+      font-size: 1rem;
+      outline: none;
+      border-radius: 0;
+    }
+    input:focus { border-color: #ba91aa; box-shadow: 0 4px 10px -8px #dca9ca; }
+    .confirm {
+      margin-top: .7rem;
+      padding: .55rem 1.7rem;
+      border: 1px solid #5c4859;
+      background: transparent;
+      color: #b8a5b5;
+      font: .72rem/1.2 inherit;
+      letter-spacing: .3em;
+      cursor: pointer;
+    }
+    .confirm:hover, .confirm:focus-visible { color: #eee4ec; border-color: #a87d99; outline: none; }
+    .feedback { min-height: 1.15rem; margin: .7rem 0 0; color: #8e5f73; font-size: .72rem; }
+    dialog {
+      width: min(84vw, 360px);
+      border: 1px solid rgba(147,91,118,.34);
+      padding: 0;
+      color: #cdbdc9;
+      background: rgba(9,6,10,.96);
+      box-shadow: 0 0 65px rgba(63,24,44,.35);
+    }
+    dialog::backdrop { background: rgba(0,0,0,.7); backdrop-filter: blur(3px); }
+    .warning { padding: 2rem 2rem 1.5rem; text-align: center; }
+    .warning-mark { margin: 0; font: 2rem/1 ui-monospace, monospace; color: #936078; }
+    .warning h2 { margin: 1.25rem 0 .45rem; font-size: 1rem; font-weight: 400; letter-spacing: .3em; }
+    .warning p { color: #776b76; font-size: .76rem; }
+    .warning button { margin-top: .7rem; border: 0; border-bottom: 1px solid #6b5062; padding: .45rem 1.5rem; background: transparent; color: #9f8999; cursor: pointer; }
+    .ending {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      background: #050306;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 2.4s ease;
+    }
+    .ending.visible { opacity: 1; pointer-events: auto; }
+    .ending p { opacity: 0; font-size: clamp(1rem, 4vw, 1.45rem); letter-spacing: .24em; color: #e1cad9; animation: reveal 3s 1.1s ease forwards; }
+    @keyframes reveal { to { opacity: 1; text-shadow: 0 0 22px rgba(197,117,165,.45); } }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .15s !important; }
+    }
+    @media (max-width: 620px) {
+      .eye-button { width: min(94vw, 520px); }
+      .unlock-panel { bottom: max(3vh, 18px); }
+      .riddle { padding: 14px 14px 11px; }
+      .counter { top: max(16px, env(safe-area-inset-top)); }
+      .figure-reveal { height: min(66svh, 490px); max-width: 88vw; bottom: 16%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="counter" aria-live="polite">COUNT&nbsp; <span id="count">000</span></div>
+  <main>
+    <section class="stage" aria-label="一只闭着的眼睛">
+      <button class="eye-button" id="eye" aria-label="触碰闭着的眼睛">
+        <span class="closed-eye" aria-hidden="true">
+          <span class="lid-line"></span>
+          <span class="lash l1"></span><span class="lash l2"></span><span class="lash l3"></span>
+          <span class="lash l4"></span><span class="lash l5"></span><span class="lash l6"></span>
+        </span>
+      </button>
+      <img class="figure-reveal" src="assets/figure-silhouette.png" alt="" aria-hidden="true" draggable="false">
+    </section>
+  </main>
+  <div class="whisper-layer" id="whispers" aria-hidden="true"></div>
+  <div class="glitch-band" style="--seed:13;--shift:-5"></div>
+  <div class="glitch-band" style="--seed:42;--shift:7"></div>
+  <div class="glitch-band" style="--seed:76;--shift:-8"></div>
+  <div class="glitch-shards" aria-hidden="true">
+    <i class="tear" style="--top:16%;--height:2.5%;--move:-18px;--speed:4.8s"></i>
+    <i class="tear" style="--top:32%;--height:5%;--move:25px;--speed:6.1s"></i>
+    <i class="tear" style="--top:54%;--height:1.7%;--move:-31px;--speed:3.9s"></i>
+    <i class="tear" style="--top:69%;--height:6%;--move:21px;--speed:5.3s"></i>
+    <i class="tear" style="--top:87%;--height:2.2%;--move:-24px;--speed:7s"></i>
+  </div>
+
+  <section class="unlock-panel" id="unlockPanel" aria-label="最终谜题" aria-hidden="true">
+    <form class="riddle" id="riddle" autocomplete="off">
+      <div class="riddle-row"><label for="answer1">1.</label><input id="answer1" aria-label="第一项" spellcheck="false"></div>
+      <div class="riddle-row"><label for="answer2">2.</label><input id="answer2" aria-label="第二项" spellcheck="false"></div>
+      <div class="riddle-row"><label for="answer3">3.</label><input id="answer3" aria-label="第三项" spellcheck="false"></div>
+      <button class="confirm" type="submit">确定</button>
+      <p class="feedback" id="feedback" role="status"></p>
+    </form>
+  </section>
+
+  <dialog id="warning">
+    <div class="warning">
+      <p class="warning-mark">!</p>
+      <h2>不要再继续</h2>
+      <p>现在离开，还来得及。</p>
+      <button id="dismiss" type="button">我知道了</button>
+    </div>
+  </dialog>
+
+  <div class="ending" id="ending" aria-live="assertive"><p>你终于找到我了...</p></div>
+
+  <script>
+    (() => {
+      const TARGET = 514;
+      const REDIRECT = 'https://pan.baidu.com/s/1_CeaBAXqFGqt8C9fafKVFA?pwd=LOVE';
+      const lines = [
+        ['不要再点了。', '这里什么都没有。', '回去吧。', '你不该来的。', '别找了。'],
+        ['为什么还在继续？', '听不见吗……', '我不想被找到。', '这里没有你要的答案。', '够了。'],
+        ['别再靠近了……', '求你，停下来。', '已经没有什么能给你了。', '不要看。', '我只是想藏起来。'],
+        ['还没有放弃吗……', '手已经没有力气推开你了。', '明明忘掉我就好了。', '不要再找我了……', '这里真的……什么都没有。'],
+        ['你还在啊……', '我已经不会再赶你走了。', '为什么一定要找到我呢……', '好累……', '再近一点，就会看见了。'],
+        ['……', '原来你一直都没有离开。', '我快要藏不住了。', '再一点点……', '如果是你的话……']
+      ];
+      const eye = document.querySelector('#eye');
+      const countEl = document.querySelector('#count');
+      const layer = document.querySelector('#whispers');
+      const warning = document.querySelector('#warning');
+      const panel = document.querySelector('#unlockPanel');
+      const form = document.querySelector('#riddle');
+      const feedback = document.querySelector('#feedback');
+      const ending = document.querySelector('#ending');
+      let count = 0;
+      let finished = false;
+
+      const pickLine = () => {
+        if (count === 1) return '你怎么找到这里来了';
+        if (count === 2) return '不是让你不要来找我吗';
+        const tier = Math.min(lines.length - 1, Math.floor((count / TARGET) * lines.length));
+        return lines[tier][(count * 7 + Math.floor(count / 11)) % lines[tier].length];
+      };
+
+      const whisper = text => {
+        const node = document.createElement('span');
+        node.className = 'whisper';
+        node.textContent = text;
+        const angle = count * 2.39996;
+        const radius = 7 + (count % 9) * 1.45;
+        node.style.setProperty('--x', `${50 + Math.cos(angle) * radius}%`);
+        node.style.setProperty('--y', `${43 + Math.sin(angle) * radius * .7}%`);
+        layer.append(node);
+        node.addEventListener('animationend', () => node.remove(), { once: true });
+      };
+
+      const unlock = () => {
+        eye.classList.add('unlocked');
+        eye.setAttribute('aria-label', '仍然闭着的眼睛');
+        eye.disabled = true;
+        panel.classList.add('visible');
+        panel.setAttribute('aria-hidden', 'false');
+        whisper('……找到你了。');
+        setTimeout(() => document.querySelector('#answer1').focus(), 3500);
+      };
+
+      eye.addEventListener('click', () => {
+        if (count >= TARGET || finished) return;
+        count += 1;
+        countEl.textContent = String(count).padStart(3, '0');
+        const progress = count / TARGET;
+        document.documentElement.style.setProperty('--progress', progress.toFixed(4));
+        document.documentElement.style.setProperty('--glitch', Math.pow(progress, 1.42).toFixed(4));
+        if (count >= 35) document.body.classList.add('glitching');
+        whisper(pickLine());
+        if (count === 10) warning.showModal();
+        if (count === TARGET) unlock();
+      });
+
+      document.querySelector('#dismiss').addEventListener('click', () => warning.close());
+      warning.addEventListener('cancel', event => { event.preventDefault(); warning.close(); });
+
+      const oneGrapheme = value => {
+        const normalized = value.normalize('NFC');
+        if (window.Intl?.Segmenter) {
+          return [...new Intl.Segmenter('zh', { granularity: 'grapheme' }).segment(normalized)][0]?.segment || '';
+        }
+        return Array.from(normalized)[0] || '';
+      };
+      document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('input', () => { input.value = oneGrapheme(input.value); feedback.textContent = ''; });
+      });
+
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+        const a = document.querySelector('#answer1').value.normalize('NFC');
+        const b = document.querySelector('#answer2').value.normalize('NFC');
+        const c = document.querySelector('#answer3').value;
+        if (a !== '❤' || b !== '🫀' || c !== '') {
+          const errors = ['不是这个。', '心跳错了一拍。', '第三个声音，本应不存在。', '再想一想……'];
+          feedback.textContent = errors[Math.floor(Math.random() * errors.length)];
+          form.animate([{ transform: 'translateX(-3px)' }, { transform: 'translateX(3px)' }, { transform: 'none' }], { duration: 320, easing: 'ease-out' });
+          return;
+        }
+        finished = true;
+        feedback.textContent = '';
+        ending.classList.add('visible');
+        setTimeout(() => { window.location.href = REDIRECT; }, 5200);
+      });
+    })();
+  </script>
+</body>
+</html>
+
